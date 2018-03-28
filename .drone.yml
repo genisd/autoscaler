@@ -19,5 +19,4 @@ pipeline:
     image: plugins/docker
     registry: eu.gcr.io
     repo: eu.gcr.io/unicorn-985/github-gynzy-drone-autoscaler
-    auto_tag: true
     secrets: [ docker_username, docker_password ]

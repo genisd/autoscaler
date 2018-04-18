@@ -12,7 +12,7 @@ import (
 	"github.com/drone/autoscaler"
 	"github.com/h2non/gock"
 
-	"google.golang.org/api/compute/v1"
+	compute "google.golang.org/api/compute/v1"
 	"google.golang.org/api/googleapi"
 )
 
@@ -122,7 +122,7 @@ var insertInstanceMock = &compute.Instance{
 	Scheduling: &compute.Scheduling{
 		Preemptible:       true,
 		OnHostMaintenance: "MIGRATE",
-		AutomaticRestart:  googleapi.Bool(true),
+		AutomaticRestart:  googleapi.Bool(false),
 	},
 	DeletionProtection: false,
 	ServiceAccounts: []*compute.ServiceAccount{

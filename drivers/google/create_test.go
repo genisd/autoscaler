@@ -121,7 +121,7 @@ var insertInstanceMock = &compute.Instance{
 	Labels: map[string]string{},
 	Scheduling: &compute.Scheduling{
 		Preemptible:       true,
-		OnHostMaintenance: "MIGRATE",
+		OnHostMaintenance: "TERMINATE",
 		AutomaticRestart:  googleapi.Bool(false),
 	},
 	DeletionProtection: false,

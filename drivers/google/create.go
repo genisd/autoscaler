@@ -85,7 +85,7 @@ func (p *provider) Create(ctx context.Context, opts autoscaler.InstanceCreateOpt
 		Labels: p.labels,
 		Scheduling: &compute.Scheduling{
 			Preemptible:       true,
-			OnHostMaintenance: "MIGRATE",
+			OnHostMaintenance: "TERMINATE",
 			AutomaticRestart:  googleapi.Bool(false),
 		},
 		DeletionProtection: false,

@@ -21,13 +21,18 @@ type zombie struct {
 
 func (z *zombie) DetectZombies(ctx context.Context) error {
 	logger := log.Ctx(ctx)
+
 	logger.Debug().
-		Msg("DetectZombies called")
+		Msg("detect zombies called")
 
 	servers, err := z.servers.List(ctx)
 	if err != nil {
 		return err
 	}
+
+	logger.Debug().
+		Int("server count", len(servers)).
+		Msg("DetectZombies server length")
 
 	for _, server := range servers {
 		z.wg.Add(1)
@@ -44,6 +49,9 @@ func (z *zombie) detectZombieAndDelete(ctx context.Context, instance *autoscaler
 		Str("ip", instance.Address).
 		Str("name", instance.Name).
 		Logger()
+
+	logger.Debug().
+		Msg("detect zombie called")
 
 	_, err := z.client(instance)
 	if err == nil {

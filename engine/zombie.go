@@ -21,6 +21,8 @@ type zombie struct {
 
 func (z *zombie) DetectZombies(ctx context.Context) error {
 	logger := log.Ctx(ctx)
+	logger.Debug().
+		Msg("DetectZombies called")
 
 	servers, err := z.servers.List(ctx)
 	if err != nil {
@@ -43,7 +45,7 @@ func (z *zombie) detectZombieAndDelete(ctx context.Context, instance *autoscaler
 		Str("name", instance.Name).
 		Logger()
 
-	client, err := z.client(instance)
+	_, err := z.client(instance)
 	if err == nil {
 		return nil // we were able to connect to the docker instance. not a zombie
 	}

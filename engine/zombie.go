@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync"
 	"time"
+	"net"
 
 	"github.com/drone/autoscaler"
 
@@ -53,12 +54,13 @@ func (z *zombie) detectZombieAndDelete(ctx context.Context, instance *autoscaler
 	logger.Debug().
 		Msg("detect zombie called")
 
-	_, err := z.client(instance)
+	conn, err := net.Dial("tcp", instance.Address + "2376")
 	if err == nil {
 		logger.Debug().
 			Msg("Instance was found alive. No zombie")
-		return nil // we were able to connect to the docker instance. not a zombie
-	}
+		conn.Close()
+		return nil
+	} 
 
 	// Ignore StatePending and StateCreating. These fields do not have a "Created" field
 	// so we cannot (yet) assert that they are of age.

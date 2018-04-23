@@ -39,7 +39,7 @@ type (
 			Token            string
 			Image            string        `default:"drone/agent:0.8"`
 			Concurrency      int           `default:"2"`
-			KeepaliveTime    time.Duration `default:"6m"`
+			KeepaliveTime    time.Duration `default:"1m"`
 			KeepaliveTimeout time.Duration `default:"30s"`
 		}
 

@@ -220,7 +220,7 @@ func (e *engine) purge(ctx context.Context) {
 
 // check all agents for unavailable agents
 func (e *engine) detectZombie(ctx context.Context) {
-	const interval = time.Second * 10
+	const interval = time.Second * 120
 	for {
 		select {
 		case <-ctx.Done():

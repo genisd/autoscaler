@@ -54,10 +54,10 @@ func (z *zombie) detectZombieAndDelete(ctx context.Context, instance *autoscaler
 	logger.Debug().
 		Msg("detect zombie called")
 
-	conn, err := net.Dial("tcp", instance.Address + "2376")
+	conn, err := net.Dial("tcp", instance.Address + ":2376")
 	if err == nil {
 		logger.Debug().
-			Msg("Instance was found alive. No zombie")
+			Msg("istance was found alive. No zombie")
 		conn.Close()
 		return nil
 	} 
@@ -66,7 +66,7 @@ func (z *zombie) detectZombieAndDelete(ctx context.Context, instance *autoscaler
 	// so we cannot (yet) assert that they are of age.
 	if instance.State == autoscaler.StatePending || instance.State == autoscaler.StateCreating {
 		logger.Debug().
-			Msg("Instance in state Pening or Creating. Not viable for for Zombie check")
+			Msg("instance in state Pening or Creating. Not viable for for Zombie check")
 		return nil
 	}
 
@@ -77,14 +77,12 @@ func (z *zombie) detectZombieAndDelete(ctx context.Context, instance *autoscaler
 		if err != nil {
 			logger.Error().
 				Err(err).
-				Str("server", instance.Name).
 				Str("state", "shutdown").
 				Msg("cannot update server state")
 			return nil
 		}
 		logger.Info().
-			Str("server", instance.Name).
-			Msg("Zombie detected. Set to state shutdown so it will get deleted")
+			Msg("zombie detected. Set to state shutdown so it will get deleted")
 	}
 	return nil
 }

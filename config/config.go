@@ -65,7 +65,7 @@ type (
 		}
 
 		Zombie struct {
-			MinAge time.Duration `default:"10m"`	
+			MinAge time.Duration `default:"10m"`
 		}
 
 		Amazon struct {

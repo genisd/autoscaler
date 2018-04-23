@@ -74,7 +74,7 @@ func New(
 			provider: provider,
 			client:   newDockerClient,
 			minAge:   config.Zombie.MinAge,
-		}
+		},
 	}
 }
 

@@ -190,6 +190,9 @@ var jsonConfig = []byte(`{
     "Driver": "mysql",
     "Datasource": "user:password@/dbname"
   },
+  "Zombie": {
+    "MinAge": 600000000000
+  },
   "DigitalOcean": {
     "Token": "2573633eb",
     "Image": "docker-16-04",

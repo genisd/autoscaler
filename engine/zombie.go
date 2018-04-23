@@ -50,6 +50,14 @@ func (z *zombie) detectZombieAndDelete(ctx context.Context, instance *autoscaler
 		return nil // we were able to connect to the docker instance. not a zombie
 	}
 
+	// Ignore StatePending and StateCreating. These fields do not have a "Created" field
+	// so we cannot (yet) assert that they are of age.
+	if instance.State == autoscaler.StatePending || instance.State == autoscaler.StateCreating {
+		logger.Debug().
+			Msg("Instance in state Pening or Creating. Not viable for for Zombie check")
+		return nil
+	}
+
 	// check if the agent is older than 10 minutes. if so schedule for removal
 	if time.Now().Before(time.Unix(instance.Created, 0).Add(z.minAge)) {
 		instance.State = autoscaler.StateShutdown

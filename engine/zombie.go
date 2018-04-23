@@ -32,7 +32,7 @@ func (z *zombie) DetectZombies(ctx context.Context) error {
 
 	logger.Debug().
 		Int("server count", len(servers)).
-		Msg("DetectZombies server length")
+		Msg("detect zombies server count")
 
 	for _, server := range servers {
 		z.wg.Add(1)
@@ -55,6 +55,8 @@ func (z *zombie) detectZombieAndDelete(ctx context.Context, instance *autoscaler
 
 	_, err := z.client(instance)
 	if err == nil {
+		logger.Debug().
+			Msg("Instance was found alive. No zombie")
 		return nil // we were able to connect to the docker instance. not a zombie
 	}
 

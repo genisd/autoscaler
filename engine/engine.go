@@ -27,6 +27,7 @@ type engine struct {
 	collector *collector
 	installer *installer
 	planner   *planner
+	zombie    *zombie
 
 	interval time.Duration
 	paused   bool
@@ -68,6 +69,12 @@ func New(
 			max:     config.Pool.Max,
 			cap:     config.Agent.Concurrency,
 		},
+		zombie: &zombie{
+			servers:  servers,
+			provider: provider,
+			client:   newDockerClient,
+			minAge:   config.Zombie.MinAge,
+		}
 	}
 }
 
@@ -94,7 +101,7 @@ func (e *engine) Resume() {
 
 func (e *engine) Start(ctx context.Context) {
 	var wg sync.WaitGroup
-	wg.Add(5)
+	wg.Add(6)
 	go func() {
 		e.allocate(ctx)
 		wg.Done()
@@ -115,6 +122,10 @@ func (e *engine) Start(ctx context.Context) {
 		e.purge(ctx)
 		wg.Done()
 	}()
+	go func() {
+		e.detectZombie(ctx)
+		wg.Done()
+	}
 	wg.Wait()
 }
 
@@ -203,6 +214,19 @@ func (e *engine) purge(ctx context.Context) {
 				Str("ttl", retain.String()).
 				Msg("clear stopped servers from database")
 			e.planner.servers.Purge(ctx, time.Now().Add(retain).Unix())
+		}
+	}
+}
+
+// check all agents for unavailable agents
+func (e *engine) detectZombie(ctx context.Context) {
+	const interval = time.Second * 10
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-time.After(interval):
+			e.zombie.DetectZombies(ctx)
 		}
 	}
 }

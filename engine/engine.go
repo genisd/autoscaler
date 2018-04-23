@@ -125,7 +125,7 @@ func (e *engine) Start(ctx context.Context) {
 	go func() {
 		e.detectZombie(ctx)
 		wg.Done()
-	}
+	}()
 	wg.Wait()
 }
 

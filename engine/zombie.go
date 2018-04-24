@@ -26,16 +26,22 @@ func (z *zombie) DetectZombies(ctx context.Context) error {
 	logger.Debug().
 		Msg("detect zombies called")
 
-	servers, err := z.servers.List(ctx)
-	if err != nil {
-		return err
+	var serverList []autoscaler.Server
+	var serverStates := [3]autoscaler.serverState(autoscaler.StateRunning, autoscaler.StateCreated, autoscaler.StateStaging)
+
+	for state := range serverStates {
+		servers, err := z.servers.ListState(ctx, state)
+		if err != nil {
+			serverList = append(serverList, servers)
+			return err
+		}
 	}
 
 	logger.Debug().
 		Int("server count", len(servers)).
 		Msg("detect zombies server count")
 
-	for _, server := range servers {
+	for _, server := range serverList {
 		z.wg.Add(1)
 		go func(server *autoscaler.Server) {
 			z.detectZombieAndDelete(ctx, server)
